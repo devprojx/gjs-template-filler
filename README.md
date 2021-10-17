@@ -1,19 +1,19 @@
-# xgjs-template-builder
+# gjs-template-filler
 
 Populates Html template produced by vue-gjs-doc-creator and return html string with populated data
 
 ### Installation
 
 ```
-npm i xgjs-template-filler
+npm i gjs-template-filler
 
-yarn add xgjs-template-filler
+yarn add gjs-template-filler
 ```
 
 ## Usage
 
 ```js
-import { populateHTMLTemplate } from "./index.js";
+import { populateHTMLTemplate } from "gjs-template-filler";
 
 const testHTML = `
 <div data-property="first_name">
