@@ -6,8 +6,12 @@ const testHTML = `
 <div data-property="last_name">
 	[Last Name Here]
 </div>
-<div data-property="date_of_birth">
+<div data-property="date_of_birth" data-type="date">
 	[Date Of Birth Here]
+</div>
+
+<div data-property="progress" data-type="percentage" data-precision="2">
+	[Progress]
 </div>
 
 <div>
@@ -15,6 +19,8 @@ const testHTML = `
 </div>
 
 <span data-property="alias">[Alias Here]</span>
+
+<span data-property="age" data-type="custom" data-append=" years old"></span>
 
 <span data-property="status" data-default="N/A">[Status Here]</span>
 
@@ -30,12 +36,13 @@ const testHTML = `
 	<span data-property="address.country">[Country Here]</span>
 </div>
 
-<table data-property="employment_details" style="width: 100%; border-spacing: 0; border-collapse: collapse; font-size: 12px; text-align: left" border="1"  cellpadding="1">
-  <caption style="text-align: left; margin-bottom: 5px"><b>Cash Collaterals</b></caption>
+<table data-property="employment_details" border="1"  cellpadding="1">
+  <caption style="text-align: left; margin-bottom: 5px"><b>Employment Info</b></caption>
   <thead>
 	  <tr>
-		  <th data-key="employer" style="width: 20%;">&nbsp; Employer</th>
-		  <th data-key="address"  style="width: 12%;">&nbsp; Address</th>
+		  <th data-key="employer">&nbsp; Employer</th>
+		  <th data-key="address">&nbsp; Address</th>
+		  <th data-key="salary" data-type="currency" data-number-seperator="," data-symbol="$" data-precision="2">&nbsp; Salary</th>
 	  </tr>
   </thead>
 </table>
@@ -45,7 +52,9 @@ const testData = {
 	first_name: "John",
 	last_name: "Doe",
 	date_of_birth: "1990-09-04",
+	age: "31",
 	hobbies: ["Coding", "Video Games"],
+	progress: 10,
 	address: {
 		street: "Main Street",
 		city: "Mandeville",
@@ -56,10 +65,12 @@ const testData = {
 		{
 			employer: "Technosoft",
 			address: "Shop 12, Midway Mall, Mandeville, Manchester",
+			salary: 100000,
 		},
 		{
 			employer: "VTDI",
 			address: "66 Caledonia Road, Mandeville, Manchester",
+			salary: 60000,
 		},
 	],
 };
@@ -74,7 +85,9 @@ describe("populateHTMLTemplate", () => {
 			if (isOnIgnoreKeyList(key)) continue;
 
 			test(`data-property [${key}]`, () => {
-				expect(populatedHtml).toContain(testData[key]);
+				let exp = testData[key];
+				if (key === "progress") exp = "10.00%";
+				expect(populatedHtml).toContain(exp);
 			});
 		}
 	});
@@ -125,4 +138,6 @@ describe("populateHTMLTemplate", () => {
 			});
 		});
 	});
+
+	console.log(populatedHtml);
 });
