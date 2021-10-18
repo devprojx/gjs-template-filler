@@ -26,13 +26,17 @@
     "semantic-release": "^18.0.0"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.10"
+    "cheerio": "^1.0.0-rc.10",
+    "currency.js": "^2.0.4",
+    "date-format": "^3.0.0"
   },
   "publishConfig": {
     "access": "public"
   },
   "release": {
-    "branches": ["main"],
+    "branches": [
+      "main"
+    ],
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
@@ -47,7 +51,10 @@
       [
         "@semantic-release/git",
         {
-          "assets": ["CHANGELOG.md", "dist/**"],
+          "assets": [
+            "CHANGELOG.md",
+            "dist/**"
+          ],
           "message": "chore(release): set `package.json` to ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
         }
       ]
