@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/devprojx/gjs-template-filler/compare/v1.1.0...v1.1.1) (2021-10-18)
+
+
+### Bug Fixes
+
+* **package.json:** added formatter.js in npm release ([dc56b10](https://github.com/devprojx/gjs-template-filler/commit/dc56b10f4f994c493a3cfc36098acd7bd93f3611))
+
 # [1.1.0](https://github.com/devprojx/gjs-template-filler/compare/v1.0.1...v1.1.0) (2021-10-18)
 
 
