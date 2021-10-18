@@ -8,6 +8,9 @@
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "semantic-release": "semantic-release"
   },
+  "files": [
+    "formatter.js"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/devprojx/gjs-template-filler.git"
