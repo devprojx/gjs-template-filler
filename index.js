@@ -1,5 +1,5 @@
 import cheerio from "cheerio";
-import formatData from "./formatter";
+import formatData from "./formatter.js";
 
 /**
  * Populate html template and return populated html string
