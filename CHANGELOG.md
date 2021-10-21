@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/devprojx/gjs-template-filler/compare/v1.1.1...v1.1.2) (2021-10-18)
+
+
+### Bug Fixes
+
+* **index,js:** ERR_MODULE_NOT_FOUND issue ([0e6fb18](https://github.com/devprojx/gjs-template-filler/commit/0e6fb1843c4c305458d7f9653a6d70d6db3a4765))
+
 ## [1.1.1](https://github.com/devprojx/gjs-template-filler/compare/v1.1.0...v1.1.1) (2021-10-18)
 
 
