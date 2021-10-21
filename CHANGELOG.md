@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/devprojx/gjs-template-filler/compare/v1.1.2...v1.1.3) (2021-10-21)
+
+
+### Bug Fixes
+
+* removed nullish coalescing operator for backward compatibility ([edc0aef](https://github.com/devprojx/gjs-template-filler/commit/edc0aef4aee75d548079a4b0f1b2094fec5fc9dc))
+
 ## [1.1.2](https://github.com/devprojx/gjs-template-filler/compare/v1.1.1...v1.1.2) (2021-10-18)
 
 
