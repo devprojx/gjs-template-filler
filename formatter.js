@@ -10,9 +10,9 @@ import dateFormat from "date-format";
 const formatData = (value, { type = "", symbol = "$", seperator = ",", precision = 0, format, append = "", prepend = "" }) => {
 	switch (type) {
 		case "currency":
-			return currency(value, { symbol, separator: seperator, precision: precision ?? 2 }).format();
+			return currency(value, { symbol, separator: seperator, precision: precision || 2 }).format();
 		case "percentage":
-			return currency(value, { precision: Number(precision) ?? 2 }).toString() + "%";
+			return currency(value, { precision: Number(precision) || 2 }).toString() + "%";
 		case "number":
 			return currency(value, { symbol: "", precision: Number(precision) }).format();
 		case "date":
@@ -23,9 +23,9 @@ const formatData = (value, { type = "", symbol = "$", seperator = ",", precision
 			}
 			return d || "";
 		case "custom":
-			return `${prepend}${(value ?? "").toString() || ""}${append}`;
+			return `${prepend}${(value || "").toString() || ""}${append}`;
 		default:
-			return (value ?? "").toString();
+			return (value || "").toString();
 	}
 };
 
