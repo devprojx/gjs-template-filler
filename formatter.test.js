@@ -41,13 +41,13 @@ describe("formatData / positive tests", () => {
 describe("formatData / negative tests", () => {
 	test("check that currency type defaults to the correct format when no options are provided", () => {
 		const result = formatData(1000, { type: "currency" });
-		const expectedResult = "$1,000";
+		const expectedResult = "$1,000.00";
 		expect(result).toEqual(expectedResult);
 	});
 
 	test("check that percentage type defaults to the correct format when no options are provided", () => {
 		const result = formatData(100, { type: "percentage" });
-		const expectedResult = "100%";
+		const expectedResult = "100.00%";
 		expect(result).toEqual(expectedResult);
 	});
 
