@@ -26,7 +26,7 @@ const populateHTMLTemplate = (html, data) => {
 			if (!previousData) return;
 			dataProperties.push(c);
 			if (arr.length - 1 !== i) {
-				previousData = previousData[c] ?? null;
+				previousData = previousData[c] || null;
 				return;
 			}
 
@@ -83,10 +83,40 @@ const _populateTemplate = ($el, data) => {
 			return;
 		}
 
-		const isTable = $el.is("table");
-		if (!isTable) return;
-
 		const props = [];
+
+		const buildList = (data, k, defaultValue, options) => {
+			const keys = k.split(".") || [];
+			if (keys.length > 1) {
+				const key = keys.shift();
+				return buildList(data[key], keys.join("."), defaultValue);
+			}
+
+			return `${!data || !data[k] ? `${defaultValue}` : `${formatData(data[k], options)}`}`;
+		};
+
+		const isTable = $el.is("table");
+		if (!isTable) {
+			$el.find(`[data-key]`).each((i, $e) => {
+				$e = $el.find($e);
+				const key = $e.attr("data-key");
+				const defaultValue = $e.attr("data-default") || "";
+				const tag = $el.prop("tagName").toLowerCase();
+
+				//remove element
+				$e.remove();
+
+				props.push({ key, defaultValue, options: _getFormatOptions($e), tag });
+			});
+
+			data.forEach((el) => {
+				//Construct elements tag based on the property associated with the header
+				const elementStr = props.map(({ key, defaultValue, options, tag }) => `<${tag}>` + buildList(el, key, defaultValue, options) + `</${tag}>`);
+				$el.append(elementStr);
+			});
+			return;
+		}
+
 		//Get the expected data points from table headers
 		$el.find(`th[data-key]`).each((i, $tableHeaderEl) => {
 			$tableHeaderEl = $el.find($tableHeaderEl);
@@ -95,21 +125,11 @@ const _populateTemplate = ($el, data) => {
 			props.push({ key, defaultValue, options: _getFormatOptions($tableHeaderEl) });
 		});
 
-		//Construct <td></td> tag based on the property associated with the header
-		const buildCell = (data, k, defaultValue, options) => {
-			const keys = k.split(".") || [];
-			if (keys.length > 1) {
-				const key = keys.shift();
-				return buildCell(data[key], keys.join("."), defaultValue);
-			}
-
-			return `<td> ${!data || !data[k] ? `${defaultValue}` : `${formatData(data[k], options)}`} </td>`;
-		};
-
 		//Construct table rows
 		const tableData = [];
 		data.forEach((el) => {
-			const tds = props.map(({ key, defaultValue, options }) => buildCell(el, key, defaultValue, options));
+			//Construct <td></td> tag based on the property associated with the header
+			const tds = props.map(({ key, defaultValue, options }) => "<td>" + buildList(el, key, defaultValue, options) + "</td>");
 			tableData.push(`<tr>${tds.join("")}</tr>`);
 		});
 

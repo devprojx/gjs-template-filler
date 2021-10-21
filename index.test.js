@@ -1,4 +1,5 @@
 import { populateHTMLTemplate } from "./index.js";
+
 const testHTML = `
 <div data-property="first_name">
 	[First Name Here]
@@ -36,6 +37,13 @@ const testHTML = `
 	<span data-property="address.country">[Country Here]</span>
 </div>
 
+<div data-property="employment_details">
+	Employment Details: <br/>
+	<span data-key="employer"  data-type="custom" data-prepend="Name: "></span>
+	<span data-key="address"></span>
+	<span data-key="salary" data-type="currency" data-number-seperator="," data-symbol="$" data-precision="2"></span>
+</div>
+
 <table data-property="employment_details" border="1"  cellpadding="1">
   <caption style="text-align: left; margin-bottom: 5px"><b>Employment Info</b></caption>
   <thead>
@@ -45,8 +53,7 @@ const testHTML = `
 		  <th data-key="salary" data-type="currency" data-number-seperator="," data-symbol="$" data-precision="2">&nbsp; Salary</th>
 	  </tr>
   </thead>
-</table>
-`;
+</table>`;
 
 const testData = {
 	first_name: "John",
