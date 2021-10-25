@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/devprojx/gjs-template-filler/compare/v1.1.4...v1.2.0) (2021-10-25)
+
+
+### Features
+
+* added support multipe blocks per array element ([8f9a4e6](https://github.com/devprojx/gjs-template-filler/commit/8f9a4e6a00378d71d23c00f72a0915b917bb6d2c))
+
 ## [1.1.4](https://github.com/devprojx/gjs-template-filler/compare/v1.1.3...v1.1.4) (2021-10-21)
 
 
