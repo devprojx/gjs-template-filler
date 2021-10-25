@@ -11,28 +11,33 @@ const populateHTMLTemplate = (html, data) => {
 	const $ = cheerio.load(html);
 
 	const uniqueProperty = {};
-	$("[data-property]").each((i, el) => {
-		const dataProperty = $(el).attr("data-property");
 
-		//Ignore data-property if it was already processed
-		if (uniqueProperty[dataProperty]) return;
-		uniqueProperty[dataProperty] = 0;
+	let isDomModified;
+	do {
+		isDomModified = false;
+		$("[data-property]").each((i, el) => {
+			const dataProperty = $(el).attr("data-property");
 
-		const dataProperties = [];
-		let previousData = data;
+			//Ignore data-property if it was already processed
+			if (uniqueProperty[dataProperty]) return;
+			uniqueProperty[dataProperty] = 0;
 
-		//Convert html class to object properties
-		dataProperty.split(".").forEach((c, i, arr) => {
-			if (!previousData) return;
-			dataProperties.push(c);
-			if (arr.length - 1 !== i) {
-				previousData = previousData[c] || null;
-				return;
-			}
+			const dataProperties = [];
+			let previousData = data;
 
-			_populateTemplate($(el), previousData[c]);
+			//Convert html class to object properties
+			dataProperty.split(".").forEach((c, i, arr) => {
+				if (!previousData) return;
+				dataProperties.push(c);
+				if (arr.length - 1 !== i) {
+					previousData = previousData[c] || null;
+					return;
+				}
+
+				isDomModified = _populateTemplate($(el), previousData[c], $);
+			});
 		});
-	});
+	} while (isDomModified);
 
 	return $("html").html();
 };
@@ -43,11 +48,15 @@ const populateHTMLTemplate = (html, data) => {
  * @param {Object | Array | String | int} data
  * @returns
  */
-const _populateTemplate = ($el, data) => {
+const _populateTemplate = ($el, data, $) => {
 	const defaultValue = $el.attr("data-default") || "";
 
 	//Remove element or set defualt value if data is not found
-	if (!data) return !defaultValue ? $el.remove() : $el.html(defaultValue);
+	if (!data) {
+		const dataProp = $el.attr("data-property");
+		$(`[data-hide-if-empty=${dataProp}]`).remove();
+		return !defaultValue ? $el.remove() : $el.html(defaultValue);
+	}
 
 	const _getFormatOptions = ($el) => {
 		const opts = {
@@ -59,12 +68,15 @@ const _populateTemplate = ($el, data) => {
 			append: $el.attr("data-append"),
 			prepend: $el.attr("data-prepend"),
 		};
+
 		return opts;
 	};
 
 	if (Array.isArray(data)) {
 		//Remove table or container el if no data is provided
 		if (data.length == 0) {
+			const dataProp = $el.attr("data-property");
+			$(`[data-hide-if-empty=${dataProp}]`).remove();
 			$el.remove();
 			return;
 		}
@@ -89,32 +101,35 @@ const _populateTemplate = ($el, data) => {
 			const keys = k.split(".") || [];
 			if (keys.length > 1) {
 				const key = keys.shift();
-				return buildList(data[key], keys.join("."), defaultValue);
+				return buildList(data[key], keys.join("."), formatData(defaultValue, options || {}));
 			}
 
-			return `${!data || !data[k] ? `${defaultValue}` : `${formatData(data[k], options)}`}`;
+			return `${data && data[k] ? `${formatData(data[k], options || {})}` : `${defaultValue}`}`;
 		};
 
-		const isTable = $el.is("table");
-		if (!isTable) {
-			$el.find(`[data-key]`).each((i, $e) => {
-				$e = $el.find($e);
-				const key = $e.attr("data-key");
-				const defaultValue = $e.attr("data-default") || "";
-				const tag = $el.prop("tagName").toLowerCase();
+		if ($el.find("th").length == 0) {
+			let $prevEl = null;
+			data.forEach((el, i) => {
+				const $container = $el.clone();
 
-				//remove element
-				$e.remove();
+				$container.removeAttr("data-property");
+				$container.find(`[data-key]`).each((i, $e) => {
+					$e = $container.find($e);
+					const key = $e.attr("data-key");
+					const defaultValue = $e.attr("data-default") || "";
+					$e.append(buildList(el, key, defaultValue, _getFormatOptions($e)));
+					$e.removeAttr("data-default");
+				});
 
-				props.push({ key, defaultValue, options: _getFormatOptions($e), tag });
+				if (i == 0) $el.after($container);
+				else $prevEl.after($container);
+
+				$prevEl = $container;
 			});
 
-			data.forEach((el) => {
-				//Construct elements tag based on the property associated with the header
-				const elementStr = props.map(({ key, defaultValue, options, tag }) => `<${tag}>` + buildList(el, key, defaultValue, options) + `</${tag}>`);
-				$el.append(elementStr);
-			});
-			return;
+			$el.remove();
+
+			return true;
 		}
 
 		//Get the expected data points from table headers
